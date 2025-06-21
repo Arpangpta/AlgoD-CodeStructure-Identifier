@@ -125,12 +125,13 @@ Module
 AlgoD-CodeStructure-Identifier/
 ├── README.md
 ├── dataset/
+│   ├── Algorithms/
+│   │    └── *.java
 │   └── AlgosVersion2.csv
 ├── notebook/
 │   └── dissertation.ipynb
-├── code/
-│   ├── ast_parser.py
-│   └── model_inference.py
+├── parser/
+│   └── ast_parser_reduced.py
 ```
 
 ## 👤 Author
