@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AlgoDetect: Identifying Code Structures with CodeBERTa</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 20px;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: #f4f4f4;
+        color: #333;
+      }
+      h1,
+      h2,
+      h3 {
+        color: #2c3e50;
+      }
+      h1 {
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+      h2 {
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+        margin-top: 30px;
+      }
+      pre {
+        background-color: #ecf0f1;
+        padding: 15px;
+        border-radius: 5px;
+        overflow-x: auto;
+        margin-bottom: 20px;
+      }
+      code {
+        font-family: "Courier New", Courier, monospace;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      ul {
+        list-style-type: disc;
+        margin-left: 20px;
+      }
+      .highlight {
+        font-weight: bold;
+      }
+      .emoji {
+        font-size: 1.2em;
+      }
+      .author-info {
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px dashed #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>
+      <span class="emoji">🔍</span> AlgoDetect: Precision Code Structure
+      Identification with CodeBERTa
+    </h1>
+
+    <p>
+      <strong>AlgoDetect</strong> is a conceptual project showcasing a novel
+      method for identifying fundamental algorithmic constructs within
+      unanalyzed source code. This approach ingeniously combines the intrinsic
+      structural details found in a program's
+      <span class="highlight">Abstract Syntax Tree (AST)</span> with the
+      advanced understanding provided by CodeBERTa, a language model expertly
+      trained on code. Our aim is to offer robust classification of code
+      patterns, especially effective even with limited, high-quality datasets.
+    </p>
+
+    <h2>
+      <span class="emoji">💡</span> Why This Matters: The Code Analysis
+      Challenge
+    </h2>
+    <p>
+      Machine learning's application to source code faces unique hurdles. Unlike
+      natural language, code possesses a complex, hierarchical syntax that goes
+      far beyond a simple sequence of words. Conventional sequential models like
+      Recurrent Neural Networks (RNNs) and Long Short-Term Memory networks
+      (LSTMs), despite their ability to manage vanishing gradients, largely
+      treat code as flat token streams. This often prevents them from truly
+      grasping long-range or deeply nested dependencies—think matching
+      parentheses or nested loops. While Transformers (like BERT or GPT) offer
+      improvements in handling longer sequences and parallelism through
+      self-attention, they too traditionally operate on linear token flows,
+      frequently missing critical structural insights.
+    </p>
+
+    <p>
+      To overcome these inherent limitations, AlgoDetect harnesses
+      <span class="highlight">CodeBERTa</span>. This Transformer model, akin to
+      RoBERTa, has been specifically pre-trained on vast code repositories.
+      CodeBERTa's tokenizer, meticulously designed for code using byte-level BPE
+      on GitHub data, tokenizes code with remarkable efficiency, often producing
+      sequences 33-50% shorter than general NLP models. Our compact CodeBERTa
+      model (featuring 6 layers and 84 million parameters), trained from scratch
+      on two million functions, brings a profound understanding of code
+      semantics. By fusing AST-driven preprocessing with CodeBERTa's rich
+      embeddings, our methodology adeptly captures both the syntactic and
+      semantic nuances necessary for accurate code pattern recognition.
+    </p>
+
+    <h2>
+      <span class="emoji">🚫</span> The Shortcomings of General-Purpose LLMs in
+      Code Analysis
+    </h2>
+    <p>
+      Most large language models (including RNNs, LSTMs, and generic
+      Transformers) are architected for linear, human language. Code, in
+      contrast, is fundamentally hierarchical and syntactic. This design
+      mismatch leads to several issues with traditional models:
+    </p>
+    <ul>
+      <li>
+        <span class="emoji">❌</span> They frequently overlook crucial control
+        flow structures such as loops and conditional statements.
+      </li>
+      <li>
+        <span class="emoji">❌</span> There's a tendency to over-rely on trivial
+        details like variable names, leading to overfitting.
+      </li>
+      <li>
+        <span class="emoji">❌</span> They struggle to differentiate between
+        semantically identical structures expressed with different token
+        arrangements.
+      </li>
+    </ul>
+
+    <h2><span class="emoji">✨</span> CodeBERTa's Edge: Tailored for Code</h2>
+    <p>
+      CodeBERTa stands out as a RoBERTa-style Transformer fine-tuned
+      specifically on programming code, offering distinct advantages:
+    </p>
+    <ul>
+      <li>
+        <span class="emoji">⚙️</span>
+        <strong>Optimized Tokenization for Code</strong>: Features a byte-level
+        BPE tokenizer meticulously crafted for the nuances of GitHub codebases.
+      </li>
+      <li>
+        <span class="emoji">🧠</span> <strong>Deep Code Semantics</strong>:
+        Pre-training on 2 million functions has instilled a strong grasp of code
+        syntax and semantic patterns.
+      </li>
+      <li>
+        <span class="emoji">💪</span>
+        <strong>Resilience with Limited Data</strong>: Its combined approach of
+        specialized tokenization and AST integration significantly reduces the
+        risk of overfitting, even with smaller datasets.
+      </li>
+      <li>
+        <span class="emoji">🔌</span> <strong>Seamless Integration</strong>:
+        Easily accessible and deployable via the HuggingFace `transformers`
+        library.
+      </li>
+    </ul>
+
+    <h2><span class="emoji">🚀</span> AlgoDetect's Operational Flow</h2>
+
+    <h3><span class="emoji">🌳</span> Processing Sequence</h3>
+    <pre class="mermaid">
+sequenceDiagram
+    participant Source as Raw Code Input
+    participant Parser as AST Generation
+    participant Refiner as Structure Refinement
+    participant Tokenizer as CodeBERTa Tokenizer
+    participant Encoder as Transformer Encoder
+    participant Classifier as Prediction Module
+
+    Source ->> Parser: Code snippet for analysis
+    Parser ->> Refiner: Generated AST
+    Refiner ->> Tokenizer: Refined AST tokens
+    Tokenizer ->> Encoder: Tokenized input for model
+    Encoder ->> Classifier: Embeddings for classification
+    Classifier -->> Source: Predicted Code Structure
+    </pre>
+
+    <h3><span class="emoji">🏗️</span> Architectural Overview</h3>
+    <pre class="mermaid">
+graph TD;
+    A[Raw Code Snippet] --> B(AST Creation Module)
+    B --> C(AST Pruning & Annotation)
+    C --> D[Flattened/Annotated AST Tokens]
+    D --> E[CodeBERTa Tokenizer Input]
+    E --> F[CodeBERTa Transformer Model (Encoder)]
+    F --> G[Algorithmic Structure Classifier Output]
+    </pre>
+
+    <h2><span class="emoji">📊</span> Model Configuration & Training</h2>
+    <ul>
+      <li>
+        Core Model: CodeBERTa-small, leveraging HuggingFace's
+        <code>AutoModelForSequenceClassification</code>.
+      </li>
+      <li>
+        Primary Task: Multi-class classification, aiming to identify specific
+        algorithmic structures.
+      </li>
+      <li>
+        Loss Function: Cross-entropy, augmented with early stopping to prevent
+        overfitting.
+      </li>
+      <li>
+        Regularization Strategy: Dropout, monitored via validation accuracy.
+      </li>
+    </ul>
+
+    <h2><span class="emoji">📁</span> Data Preparation & Preprocessing</h2>
+    <ul>
+      <li>
+        <strong>Data Source</strong>: Our primary dataset is
+        `AlgosVersion2.csv`, containing a mix of Java and Python code examples
+        alongside their corresponding structural labels.
+      </li>
+      <li>
+        <strong>AST Generation</strong>: Language-specific tools (e.g., Python's
+        `ast` module) are employed for precise AST parsing.
+      </li>
+      <li>
+        <strong>AST Refinement</strong>: This crucial step involves extracting
+        and highlighting key structural elements such as loops, conditional
+        statements, API invocations, and variable types.
+      </li>
+      <li>
+        <strong>Unified Tokenization</strong>: The combined AST and raw code
+        tokens are then fed into the CodeBERTa tokenizer for model readiness.
+      </li>
+    </ul>
+
+    <h2><span class="emoji">🌱</span> Illustrative AST Snippet</h2>
+    <pre><code class="language-python">def add_numbers(num1, num2):
+    result = num1 + num2
+    return result
+</code></pre>
+
+    <p><strong>Resulting AST Representation</strong>:</p>
+    <pre><code>Module
+└── FunctionDef (add_numbers)
+    ├── arguments (num1, num2)
+    ├── Assign (result)
+    │   └── BinOp (Add)
+    └── Return (result)
+</code></pre>
+
+    <h2><span class="emoji">📋</span> Dataset Snapshot</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Code Sample</th>
+          <th>Assigned Label</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Recursive Fibonacci computation</td>
+          <td>FibonacciSequence</td>
+        </tr>
+        <tr>
+          <td>Dijkstra's with while loop</td>
+          <td>DijkstraAlgorithm</td>
+        </tr>
+        <tr>
+          <td>BFS using HashMap</td>
+          <td>BreadthFirstSearch</td>
+        </tr>
+      </tbody>
+    </table>
+    <ul>
+      <li>File Location: `dataset/AlgosVersion2.csv`</li>
+      <li>
+        Data Format: Each entry comprises a `code` string and its `label`.
+      </li>
+    </ul>
+
+    <h2><span class="emoji">📈</span> Performance & Future Directions</h2>
+    <ul>
+      <li><strong>Evaluated Model</strong>: Our fine-tuned CodeBERTa-small.</li>
+      <li>
+        <strong>Comparative Analysis</strong>: Benchmarked against BERT and LSTM
+        base models.
+      </li>
+      <li>
+        <strong>Evaluation Task</strong>: Multi-class classification of code
+        structures.
+      </li>
+      <li>
+        <strong>Key Metrics</strong>: Accuracy and detailed confusion matrix
+        analysis.
+      </li>
+      <li>
+        <strong>Methodology</strong>: Standard train-test splitting for robust
+        evaluation.
+      </li>
+      <li>
+        <strong>Outcome</strong>: The CodeBERTa + AST approach consistently
+        outperforms token-only baselines.
+      </li>
+      <li>
+        <strong>Future Work</strong>: Investigations into integrating Data Flow
+        Graphs (DFG) alongside AST, and exploring other GraphCodeBERT variants
+        for enhanced structural understanding.
+      </li>
+    </ul>
+
+    <h2><span class="emoji">✨</span> Core Tenets of AlgoDetect</h2>
+    <ul>
+      <li>
+        <span class="emoji">✅</span> Committed to understanding real-world code
+        structures and their inherent logic.
+      </li>
+      <li>
+        <span class="emoji">🧠</span> Leverages
+        <span class="highlight">Abstract Syntax Trees (ASTs)</span> for granular
+        code parsing and intelligent refinement.
+      </li>
+      <li>
+        <span class="emoji">🤖</span> Employs a fine-tuned
+        <span class="highlight">CodeBERTa-small</span> model specifically for
+        structural classification tasks.
+      </li>
+      <li>
+        <span class="emoji">📉</span> Optimally designed for effectiveness even
+        with small, meticulously curated datasets.
+      </li>
+      <li>
+        <span class="emoji">🔍</span> Provides comprehensive evaluation through
+        structured metrics and insightful classification analysis.
+      </li>
+    </ul>
+
+    <h2><span class="emoji">📂</span> Project Directory Layout</h2>
+    <pre><code>AlgoD-CodeStructure-Identifier/
+├── README.md
+├── dataset/
+│   └── AlgosVersion2.csv
+├── notebook/
+│   └── dissertation.ipynb
+├── code/
+│   ├── ast_parser.py
+│   └── model_inference.py
+</code></pre>
+
+    <div class="author-info">
+      <h2><span class="emoji">🧑‍💻</span> Project Lead</h2>
+      <p><strong>Arpan Gupta</strong></p>
+      <p>
+        <span class="emoji">🎓</span> MSc AI & Robotics, University of Glasgow
+      </p>
+      <p>
+        <span class="emoji">🔗</span>
+        <a href="https://github.com/Arpangpta" target="_blank"
+          >GitHub Profile</a
+        >
+      </p>
+    </div>
+
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.js";
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+  </body>
+</html>
